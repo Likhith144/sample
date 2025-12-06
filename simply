@@ -1,0 +1,21 @@
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Load the CSV file
+movies = pd.read_csv(r"C:\Users\My PC\movies.csv")
+
+# Combine genres + overview into 1 column
+movies['combined_features'] = movies['genres'] + " " + movies['overview']
+
+# Convert text into vectors using CountVectorizer
+cv = CountVectorizer(stop_words='english')
+count_matrix = cv.fit_transform(movies['combined_features'])
+
+# Compute similarity between all movies
+similarity_scores = cosine_similarity(count_matrix)
+
+# Recommendation function
+def recommend_movie(movie_title):
+    movie_title = movie_title.strip()  # Remove extra spaces
+    if movie_title not in movies['title'].values:
